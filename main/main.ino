@@ -3,18 +3,22 @@
 float RateCalRoll, RateCalPitch, RateCalYaw;
 int RateCalTime;
 
+unsigned long BaudRate = 57600;
+uint32_t ArdClock = 400000;
+
 void setup() {
-  Serial.begin(57600);
+  Serial.begin(BaudRate);
   pinMode(13, OUTPUT);
   digitalWrite(13, HIGH);
-  Wire.setClock(400000);
+  Wire.setClock(ArdClock);
   Wire.begin();
   delay(250);
-  Wire.beginTransmission(0x68);
-  Wire.write(0x6B);  //PWR_MGMT_1
-  Wire.write(0x00);  //CLKSEL == 0 : Clock Source: Internal 20MHz oscillator
-  Wire.endTransmission();
 
+  // Select Clock Source
+  Wire.beginTransmission(I2C_ADD);
+  Wire.write(PWR_MGMT_1);
+  Wire.write(CLKSEL_20MHZ);
+  Wire.endTransmission();
 
   // GyroScope Calibration
   // Take measurements gor 2000 ms and sum the measurements
