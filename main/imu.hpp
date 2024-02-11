@@ -1,6 +1,4 @@
-#ifndef MY_GYRO_SCOPE_H_
-#define MY_GYRO_SCOPE_H_
-
+#pragma once
 #include "mpu6500.h"
 #include "Arduino.h"
 
@@ -27,4 +25,3 @@ Xyz acc_signals(void);
 ImuCal init_imu(void);
 Xyz gyro_angles(ImuCal calval);
 Xyz acc_angles(ImuCal calval);
-#endif

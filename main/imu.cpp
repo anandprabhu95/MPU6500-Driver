@@ -1,3 +1,4 @@
+#pragma once
 #include "imu.hpp"
 
 Xyz gyro_signals(void) {
@@ -10,14 +11,12 @@ Xyz gyro_signals(void) {
   GyroX = Wire.read() << 8 | Wire.read();
   GyroY = Wire.read() << 8 | Wire.read();
   GyroZ = Wire.read() << 8 | Wire.read();
-
-  Xyz gyro;
-
+  
   // GyroOut is in the form GyroOut = Sensitivity*AngularRate.
+  Xyz gyro;
   gyro.x = (float)GyroX / 65.5;
   gyro.y = (float)GyroY / 65.5;
   gyro.z = (float)GyroZ / 65.5;
-
   return gyro;
 }
 
@@ -34,7 +33,6 @@ Xyz acc_signals(void) {
   acc.x = (float)(Wire.read() << 8 | Wire.read()) / 4096.0;
   acc.y = (float)(Wire.read() << 8 | Wire.read()) / 4096.0;
   acc.z = (float)(Wire.read() << 8 | Wire.read()) / 4096.0;
-
   return acc;
 }
 
@@ -58,29 +56,29 @@ ImuCal init_imu(void) {
   Wire.write(ACCEL_FS_SEL);
   Wire.endTransmission();
 
-  ImuCal cals{0};
-
   // GyroScope Calibration
   // Take measurements gor 2000 ms and sum the measurements
   Serial.println("Calibrating IMU ...");
+ 
+  ImuCal cals{0};
+
   for (RateCalTime = 0;
-       RateCalTime < 10000;
+       RateCalTime < 3000;
        RateCalTime++) {
     Xyz gyrosig = gyro_signals();
-
+    
     cals.gyrocal.x = cals.gyrocal.x + gyrosig.x;
     cals.gyrocal.y = cals.gyrocal.y + gyrosig.y;
     cals.gyrocal.z = cals.gyrocal.z + gyrosig.z;
     delay(1);
   }
   // Average the measurements to obtain calibration values
-  cals.gyrocal.x /= 10000;
-  cals.gyrocal.y /= 10000;
-  cals.gyrocal.z /= 10000;
+  cals.gyrocal.x /= 3000;
+  cals.gyrocal.y /= 3000;
+  cals.gyrocal.z /= 3000;
   cals.acccal.x = 0.07;
   cals.acccal.y = 0.04;
   cals.acccal.z = 0.03; 
-
   return cals;
 }
 
@@ -102,7 +100,7 @@ Xyz acc_angles(ImuCal calval){
   accForAngles.x = accForAngles.x - calval.acccal.x;
   accForAngles.y = accForAngles.y - calval.acccal.y;
   accForAngles.z = accForAngles.z - calval.acccal.z;
-  acc_theta.x=atan(accForAngles.y/sqrt(accForAngles.x*accForAngles.x+accForAngles.z*accForAngles.z))*1/(3.142/180);
-  acc_theta.y=-atan(accForAngles.x/sqrt(accForAngles.y*accForAngles.y+accForAngles.z*accForAngles.z))*1/(3.142/180);
+  acc_theta.x =  atan(accForAngles.y / sqrt(accForAngles.x*accForAngles.x+accForAngles.z*accForAngles.z)) * 1/(3.142/180);
+  acc_theta.y = -atan(accForAngles.x / sqrt(accForAngles.y*accForAngles.y+accForAngles.z*accForAngles.z)) * 1/(3.142/180);
   return acc_theta;
 }
