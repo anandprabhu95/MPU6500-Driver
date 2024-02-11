@@ -64,7 +64,7 @@ ImuCal init_imu(void) {
   // Take measurements gor 2000 ms and sum the measurements
   Serial.println("Calibrating IMU ...");
   for (RateCalTime = 0;
-       RateCalTime < 10000;
+       RateCalTime < 2000;
        RateCalTime++) {
     Xyz gyrosig = gyro_signals();
 
@@ -74,9 +74,9 @@ ImuCal init_imu(void) {
     delay(1);
   }
   // Average the measurements to obtain calibration values
-  cals.gyrocal.x /= 10000;
-  cals.gyrocal.y /= 10000;
-  cals.gyrocal.z /= 10000;
+  cals.gyrocal.x /= 2000;
+  cals.gyrocal.y /= 2000;
+  cals.gyrocal.z /= 2000;
   cals.acccal.x = 0.07;
   cals.acccal.y = 0.04;
   cals.acccal.z = 0.03; 
