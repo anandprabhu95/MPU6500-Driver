@@ -1,7 +1,7 @@
 #pragma once
 #include "imu.hpp"
 
-Xyz gyro_signals(void) {
+Xyz gyro_signals(void){
   //  The Gyro Output is a 16 bit value transmitted as two 8 bit values
   //  Concatonate two 8 bit values to get the 16 bit value.
   Wire.beginTransmission(I2C_ADD);
@@ -14,14 +14,14 @@ Xyz gyro_signals(void) {
   
   // GyroOut is in the form GyroOut = Sensitivity*AngularRate.
   Xyz gyro;
-  gyro.x = (float)GyroX / 65.5;
-  gyro.y = (float)GyroY / 65.5;
-  gyro.z = (float)GyroZ / 65.5;
+  gyro.x = static_cast<float>(GyroX) / 65.5;
+  gyro.y = static_cast<float>(GyroY) / 65.5;
+  gyro.z = static_cast<float>(GyroZ) / 65.5;
   return gyro;
 }
 
 
-Xyz acc_signals(void) {
+Xyz acc_signals(void){
   //  The Gyro Output is a 16 bit value transmitted as two 8 bit values
   //  Concatonate two 8 bit values to get the 16 bit value.
 
@@ -37,7 +37,7 @@ Xyz acc_signals(void) {
 }
 
 
-ImuCal init_imu(void) {
+ImuCal init_imu(void){
   // Choose Low-Pass filter with a cutoff of 10Hz.
   Wire.beginTransmission(I2C_ADD);
   Wire.write(CONFIG);
@@ -57,8 +57,7 @@ ImuCal init_imu(void) {
   Wire.endTransmission();
 
   // GyroScope Calibration
-  // Take measurements gor 2000 ms and sum the measurements
-  Serial.println("Calibrating IMU ...");
+  // Take measurements gor 3000 ms and sum the measurements
  
   ImuCal cals{0};
 
@@ -76,8 +75,8 @@ ImuCal init_imu(void) {
   cals.gyrocal.x /= 3000;
   cals.gyrocal.y /= 3000;
   cals.gyrocal.z /= 3000;
-  cals.acccal.x = 0.07;
-  cals.acccal.y = 0.04;
+  cals.acccal.x = 0.09;
+  cals.acccal.y = 0.051;
   cals.acccal.z = 0.03; 
   return cals;
 }
@@ -102,5 +101,17 @@ Xyz acc_angles(ImuCal calval){
   accForAngles.z = accForAngles.z - calval.acccal.z;
   acc_theta.x =  atan(accForAngles.y / sqrt(accForAngles.x*accForAngles.x+accForAngles.z*accForAngles.z)) * 1/(3.142/180);
   acc_theta.y = -atan(accForAngles.x / sqrt(accForAngles.y*accForAngles.y+accForAngles.z*accForAngles.z)) * 1/(3.142/180);
+  //acc_theta.z = 0.0;
   return acc_theta;
 }
+
+
+// Complementary filter 
+Xyz compl_filter(Xyz acc_meas, Xyz gyr_meas, float filter_gain){
+  filtered_val.x = filter_gain*gyr_meas.x + (1-filter_gain)*acc_meas.x;
+  filtered_val.y = filter_gain*gyr_meas.y + (1-filter_gain)*acc_meas.y;
+  filtered_val.z = filter_gain*gyr_meas.z + (1-filter_gain)*acc_meas.z;
+  return filtered_val;
+} 
+
+// TO-DO: Use Kalman filter instead

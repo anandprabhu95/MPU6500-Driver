@@ -1,11 +1,12 @@
 #pragma once
 #include "main_arduino.hpp"
 
-void setup() {
+int main(void){
+  
+  init();
   main_setup();
-}
 
-void loop() {
-  main_loop();
-  delay(1);
+  while(true){
+    main_loop();
+  }
 }

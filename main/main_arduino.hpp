@@ -2,6 +2,7 @@
 #include "Arduino.h"
 #include "mpu6500.h"
 #include "imu.hpp"
+#include "EEPROM.h"
 
 static ImuCal calibrations;
 
