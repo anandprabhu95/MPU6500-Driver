@@ -5,11 +5,13 @@
 static int16_t GyroX, GyroY, GyroZ;
 static int16_t RateCalTime;
 
-struct Xyz {
+struct Xyz 
+{
   float x, y, z;
 };
 
-struct ImuCal {
+struct ImuCal 
+{
   Xyz gyrocal;
   Xyz acccal;
 };

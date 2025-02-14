@@ -5,7 +5,8 @@ const unsigned long BaudRate{57600};
 const uint32_t ArdClock{400000};
 
 
-void main_setup(void){
+void main_setup(void)
+{
   Serial.begin(BaudRate);
 
   Serial.println("");
@@ -45,7 +46,8 @@ void main_setup(void){
   // TO_DO: Force calibration with long-press reset button
   
 
-void main_loop(void){
+void main_loop(void)
+{
   Xyz angles1 = acc_angles(calibrations);
   Xyz angles2 = gyro_angles(calibrations);
   Xyz angles = compl_filter(angles1, angles2, 0.04);
@@ -58,19 +60,19 @@ void main_loop(void){
 
 void calibrateImu() 
 {
-    Serial.println(F("Calibrating IMU ..."));
-    calibrations = init_imu();
-    EEPROM.put(0, calibrations);
-    Serial.println(F("Calibration finished."));
-    Serial.println(F("New values stored on EEPROM."));
+  Serial.println(F("Calibrating IMU ..."));
+  calibrations = init_imu();
+  EEPROM.put(0, calibrations);
+  Serial.println(F("Calibration finished."));
+  Serial.println(F("New values stored on EEPROM."));
 }
 
 
 void readCalibration()
 {
-    Serial.println(F("Reading stored cals from EEPROM."));
-    EEPROM.get(0, calibrations);    
-    delay(3000);
+  Serial.println(F("Reading stored cals from EEPROM."));
+  EEPROM.get(0, calibrations);    
+  delay(3000);
 }
 
 

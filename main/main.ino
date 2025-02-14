@@ -1,12 +1,13 @@
 #pragma once
 #include "main_arduino.hpp"
 
-int main(void){
-  
+int main(void)
+{ 
   init();
   main_setup();
 
-  while(true){
+  while(true)
+  {
     main_loop();
   }
 }

@@ -1,7 +1,8 @@
 #pragma once
 #include "imu.hpp"
 
-Xyz gyro_signals(void){
+Xyz gyro_signals(void)
+{
   //  The Gyro Output is a 16 bit value transmitted as two 8 bit values
   //  Concatonate two 8 bit values to get the 16 bit value.
   Wire.beginTransmission(I2C_ADD);
@@ -21,7 +22,8 @@ Xyz gyro_signals(void){
 }
 
 
-Xyz acc_signals(void){
+Xyz acc_signals(void)
+{
   //  The Gyro Output is a 16 bit value transmitted as two 8 bit values
   //  Concatonate two 8 bit values to get the 16 bit value.
 
@@ -37,7 +39,8 @@ Xyz acc_signals(void){
 }
 
 
-ImuCal init_imu(void){
+ImuCal init_imu(void)
+{
   // Choose Low-Pass filter with a cutoff of 10Hz.
   Wire.beginTransmission(I2C_ADD);
   Wire.write(CONFIG);
@@ -61,9 +64,8 @@ ImuCal init_imu(void){
  
   ImuCal cals{0};
 
-  for (RateCalTime = 0;
-       RateCalTime < 10000;
-       RateCalTime++) {
+  for (RateCalTime = 0; RateCalTime < 10000; RateCalTime++) 
+  {
     Xyz gyrosig = gyro_signals();
     
     cals.gyrocal.x = cals.gyrocal.x + gyrosig.x;
@@ -74,7 +76,7 @@ ImuCal init_imu(void){
   cals.gyrocal.x /= 10000;
   cals.gyrocal.y /= 10000;
   cals.gyrocal.z /= 10000;
-  
+
   cals.acccal.x = 0.09;
   cals.acccal.y = 0.051;
   cals.acccal.z = 0.03; 
@@ -82,7 +84,8 @@ ImuCal init_imu(void){
 }
 
 
-Xyz gyro_angles(ImuCal calval){
+Xyz gyro_angles(ImuCal calval)
+{
   gyrorateForAngles = gyro_signals();
   gyrorateForAngles.x = gyrorateForAngles.x - calval.gyrocal.x;
   gyrorateForAngles.y = gyrorateForAngles.y - calval.gyrocal.y;
@@ -94,7 +97,8 @@ Xyz gyro_angles(ImuCal calval){
 }
 
 
-Xyz acc_angles(ImuCal calval){
+Xyz acc_angles(ImuCal calval)
+{
   accForAngles = acc_signals();
   accForAngles.x = accForAngles.x - calval.acccal.x;
   accForAngles.y = accForAngles.y - calval.acccal.y;
@@ -107,7 +111,8 @@ Xyz acc_angles(ImuCal calval){
 
 
 // Complementary filter 
-Xyz compl_filter(Xyz acc_meas, Xyz gyr_meas, float filter_gain){
+Xyz compl_filter(Xyz acc_meas, Xyz gyr_meas, float filter_gain)
+{
   filtered_val.x = filter_gain*gyr_meas.x + (1-filter_gain)*acc_meas.x;
   filtered_val.y = filter_gain*gyr_meas.y + (1-filter_gain)*acc_meas.y;
   filtered_val.z = filter_gain*gyr_meas.z + (1-filter_gain)*acc_meas.z;
