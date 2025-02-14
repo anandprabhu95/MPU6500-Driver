@@ -9,10 +9,6 @@ struct Xyz {
   float x, y, z;
 };
 
-struct Xyz2 {
-  float x, y, z;
-};
-
 struct ImuCal {
   Xyz gyrocal;
   Xyz acccal;

@@ -30,22 +30,16 @@ void main_setup(void){
   EEPROM.get(cal_addr, target);
 
   // If no values are stored, write new calibrations to EEPROM else read stored values.
-
   if (isnan(target.acccal.x)) 
-  {
+  { 
     Serial.println(F("Calibration values in EEPROM address 0 is nan"));
-    Serial.println(F("Calibrating IMU ..."));
-    calibrations = init_imu();
-    EEPROM.put(0, calibrations);
-    Serial.println(F("New Calibrations stored to EEPROM."));
+    calibrateImu();
   } 
   else 
   {
-    Serial.println(F("Reading stored cals from EEPROM."));
-    EEPROM.get(0, calibrations);
-    Serial.println(F("Calibrations finished."));
+    recalibrate();
+    readCalibration();
   }
-  delay(100);
 }
 
   // TO_DO: Force calibration with long-press reset button
@@ -59,5 +53,42 @@ void main_loop(void){
   Serial.print(angles.x);
   Serial.print(F(" Acc_angle_Pitch= "));
   Serial.println(angles.y);
+}
+
+
+void calibrateImu() 
+{
+    Serial.println(F("Calibrating IMU ..."));
+    calibrations = init_imu();
+    EEPROM.put(0, calibrations);
+    Serial.println(F("Calibration finished."));
+    Serial.println(F("New values stored on EEPROM."));
+}
+
+
+void readCalibration()
+{
+    Serial.println(F("Reading stored cals from EEPROM."));
+    EEPROM.get(0, calibrations);    
+    delay(3000);
+}
+
+
+void recalibrate()
+{
+  Serial.println(F("Enter Y to recalibrate Gyro and Accelerometer:"));
+  while (millis() < 5000)
+  {
+    if (Serial.available() ) 
+    {
+    int serinput = Serial.read();
+    Serial.println((char)serinput);
+      if ((char)serinput == 'Y')
+      { 
+        calibrateImu();
+        break;
+      } 
+    }
+  }
 }
 

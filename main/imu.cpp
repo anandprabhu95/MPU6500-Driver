@@ -57,12 +57,12 @@ ImuCal init_imu(void){
   Wire.endTransmission();
 
   // GyroScope Calibration
-  // Take measurements gor 3000 ms and sum the measurements
+  // Take measurements for RateCalTime(ms) and average the measurements to obtain calibration values
  
   ImuCal cals{0};
 
   for (RateCalTime = 0;
-       RateCalTime < 3000;
+       RateCalTime < 10000;
        RateCalTime++) {
     Xyz gyrosig = gyro_signals();
     
@@ -71,10 +71,10 @@ ImuCal init_imu(void){
     cals.gyrocal.z = cals.gyrocal.z + gyrosig.z;
     delay(1);
   }
-  // Average the measurements to obtain calibration values
-  cals.gyrocal.x /= 3000;
-  cals.gyrocal.y /= 3000;
-  cals.gyrocal.z /= 3000;
+  cals.gyrocal.x /= 10000;
+  cals.gyrocal.y /= 10000;
+  cals.gyrocal.z /= 10000;
+  
   cals.acccal.x = 0.09;
   cals.acccal.y = 0.051;
   cals.acccal.z = 0.03; 

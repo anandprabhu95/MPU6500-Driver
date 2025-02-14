@@ -10,3 +10,6 @@ static ImuCal calibrations;
 void main_setup(void);
 void main_loop(void);
 
+void calibrateImu(void);
+void readCalibration(void);
+void recalibrate(void);
