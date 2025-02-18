@@ -1,32 +1,43 @@
 #pragma once
 #include "mpu6500.h"
 #include "Arduino.h"
+#include "EEPROM.h"
 
-static int16_t GyroX, GyroY, GyroZ;
-static int16_t RateCalTime;
 
-struct Xyz 
+namespace IMU
 {
-  float x, y, z;
-};
+  static int16_t GyroX, GyroY, GyroZ;
+  static int16_t RateCalTime;
 
-struct ImuCal 
-{
-  Xyz gyrocal;
-  Xyz acccal;
-};
+  struct Axes 
+  {
+    float x, y, z;
+  };
 
-static Xyz gyro_theta{0};
-static Xyz acc_theta{0};
-static Xyz gyrorateForAngles{0};
-static Xyz accForAngles{0};
+  struct ImuCal 
+  {
+    Axes gyroCal;
+    Axes accCal;
+  };
 
-Xyz gyro_signals(void);
-Xyz acc_signals(void);
-ImuCal init_imu(void);
-Xyz gyro_angles(ImuCal calval);
-Xyz acc_angles(ImuCal calval);
+  static ImuCal calibrations{0};
 
-static Xyz filtered_val{0};
+  static Axes gyroTheta{0};
+  static Axes accTheta{0};
+  static Axes gyrorateForAngles{0};
+  static Axes accForAngles{0};
+  static Axes filteredVal{0};
 
-Xyz compl_filter(Xyz acc_meas, Xyz gyr_meas, float filter_gain);
+  
+  Axes GetGyroSignals(void);
+  Axes GetAccSignals(void);
+  extern void InitImu(void);
+
+  void CalibrateImu(void);
+  void ReadCalibration(void);
+  void Recalibrate(void);
+
+  extern Axes GetGyroAngles(void);
+  extern Axes GetAccAngles(void);
+  extern Axes ComplFilter(Axes acc_meas, Axes gyr_meas, float filter_gain);
+}
